@@ -1,0 +1,61 @@
+== 引用須注意 ==
+1. 資料庫連線路徑須修改 appsettings.json > ConnectionStrings > DefaultConnection
+2. 修正對應欄位 Models > Customer.cs
+
+== 新webapi建置步驟 ==
+ref link:
+1.
+https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio-code#update-the-posttodoitem-create-method
+2.
+https://blog.poychang.net/asp-net-core-webapi-with-entity-framework-core/
+
+step1.
+dotnet new webapi -o TodoApi
+cd TodoApi
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.InMemory
+code -r ../TodoApi
+
+step2.
+dotnet dev-certs https --trust
+# swagger
+Swagger 頁面隨即 /swagger/index.html 顯示
+將 要求 URL 複製並貼入瀏覽器中： https://localhost:<port>/WeatherForecast
+
+step3.
+在 Properties\launchSettings.js開啟，請 launchUrl 從更新 "swagger" 為 "api/TodoItems"
+
+step4.
+1.新增模型類別
+TodoItem使用下列程式碼，將類別新增至 Models 資料夾
+
+2.新增資料庫內容
+將 TodoContext 類別新增至 Models 資料夾。
+
+3.登錄資料庫內容，修改 Startup.cs
+
+step5.
+1. 安裝 CodeGeneration 模組
+dotnet add package Microsoft.VisualStudio.Web.CodeGeneration.Design
+
+2. 安裝 EntityFrameworkCore 模組
+dotnet add package Microsoft.EntityFrameworkCore.Design
+
+3. 其他
+dotnet tool install -g dotnet-aspnet-codegenerator
+dotnet tool update -g dotnet-aspnet-codegenerator
+
+4.使用 aspnet-codegenerator 產生 controller 程式
+名稱: TodoItemsController
+表名稱: TodoItem
+Context名稱: TodoContext
+dotnet aspnet-codegenerator controller -name TodoItemsController -async -api -m TodoItem -dc TodoContext -outDir Controllers
+
+修改controllers中的檔案
+
+step5.
+使用 Postman 測試 PostTodoItem
+body > row json
+
+Note:
+@ post&get要對應SQLServer的欄位設計類型，否則會報錯
